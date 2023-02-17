@@ -10,5 +10,4 @@ Thumbs.db
 *.jpg
 *.png
 *.svg
-time_series_modeling_lesson.ipynb
 wrangle.py

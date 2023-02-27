@@ -2,39 +2,20 @@ import pandas as pd
 import numpy as np
 
 
-def get_quartiles(series):
-    '''
-    Takes in a series (df.column) and returns 4 quartiles of 
-    that series
-    '''
-    q1_end = int(len(series) * .25)
-    q2_end = int(len(series) * .50)
-    q3_end = int(len(series) * .75)
 
-    q1 = series[:q1_end]
-    q2 = series[q1_end:q2_end]
-    q3 = series[q2_end:q3_end]
-    q4 = series[q3_end:]
+def get_lower_and_upper_bounds (series, multiplier=1.5):
 
-    return q1, q2, q3, q4
+    q1 = series.quantile(0.25)
+    q3 = series.quantile(0.75)
+    iqr = q3 - q1
+    lb = q1 - (iqr * multiplier)
+    ub = q3 + (iqr * multiplier)
+
+    return lb, ub
 
 
-
-
-
-def get_lower_and_upper_bounds(series, multiplier = 1.5):
-
-    q1_end = int(len(series) * .25)
-    q2_end = int(len(series) * .50)
-    q3_end = int(len(series) * .75)
-
-
-    q1 = series[:q1_end]
-    q2 = series[q1_end:q2_end]
-    q3 = series[q2_end:q3_end]
-    q4 = series[q3_end:]
-
-    IQR = series[q1_end:q3_end]
-
-
-    return q1, q2, q3, q4
+def sigma_rule(df, col, sd):
+    z_scores = (df[col] - df[col].mean()) / df[col].std()
+    df['temp_zscores'] = z_scores
+    df = df[df['temp_zscores'].abs() >=sd]
+    return df
